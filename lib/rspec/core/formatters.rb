@@ -1,3 +1,4 @@
+RSpec::Support.require_rspec_core "directory_maker"
 # ## Built-in Formatters
 #
 # * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
@@ -232,24 +233,8 @@ module RSpec::Core::Formatters
     end
 
     def file_at(path)
-      mkdir_p(File.dirname(path))
+      DirectoryMaker.mkdir_p(File.dirname(path))
       File.new(path, 'w')
-    end
-
-    def mkdir_p(path)
-      stack = []
-      path.split(File::SEPARATOR).each do |part|
-        if stack.empty? && part == ""
-          stack << "/"
-        else
-          stack << part
-        end
-        begin
-          Dir.mkdir(File.join(stack))
-        rescue Errno::EISDIR
-        rescue Errno::EEXIST
-        end
-      end
     end
   end
 end
