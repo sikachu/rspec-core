@@ -1,4 +1,10 @@
+# @api private
+#
+# Replacement for fileutils
 class DirectoryMaker
+  # @api private
+  #
+  # Implements nested directory construction
   def self.mkdir_p(path)
     stack = []
     path.split(File::SEPARATOR).each do |part|
