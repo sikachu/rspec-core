@@ -130,12 +130,6 @@ module RSpec
             @example_group_instance.instance_variable_set(ivar, nil)
           end
           @example_group_instance = nil
-
-          begin
-            assign_generated_description
-          rescue Exception => e
-            set_exception(e, "while assigning the example description")
-          end
         end
 
         finish(reporter)
@@ -296,6 +290,7 @@ An error occurred #{context}
       def run_after_each
         @example_group_class.run_after_each_hooks(self)
         verify_mocks
+        assign_generated_description if RSpec.configuration.expecting_with_rspec?
       rescue Exception => e
         set_exception(e, "in an after(:each) hook")
       ensure
@@ -309,10 +304,12 @@ An error occurred #{context}
       end
 
       def assign_generated_description
-        return unless RSpec.configuration.expecting_with_rspec?
-        if metadata[:description_args].empty? and !pending?
-          metadata[:description_args] << RSpec::Matchers.generated_description
+        if metadata[:description].empty? && (description = RSpec::Matchers.generated_description)
+          metadata[:description_args] << description
         end
+      rescue Exception => e
+        set_exception(e, "while assigning the example description")
+      ensure
         RSpec::Matchers.clear_generated_description
       end
 
