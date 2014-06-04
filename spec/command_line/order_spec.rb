@@ -4,6 +4,10 @@ describe 'command line', :ui do
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }
 
+  before do
+    allow(RSpec).to receive(:warn_deprecation).with(/no longer implicitly/)
+  end
+
   before :all do
     write_file 'spec/simple_spec.rb', """
       describe 'group 1' do

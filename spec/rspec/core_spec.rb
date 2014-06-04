@@ -56,10 +56,14 @@ describe RSpec do
       config_before_reset = RSpec.configuration
       world_before_reset  = RSpec.world
 
-      RSpec.reset
+      call_internal_reset_so_that_other_tests_dont_think_the_user_called_reset
 
       expect(RSpec.configuration).not_to equal(config_before_reset)
       expect(RSpec.world).not_to equal(world_before_reset)
+    end
+
+    def call_internal_reset_so_that_other_tests_dont_think_the_user_called_reset
+      RSpec.internal_reset
     end
   end
 

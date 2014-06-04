@@ -28,7 +28,15 @@ module RSpec::Core
 
       it "tells RSpec to reset" do
         RSpec.configuration.stub(:files_to_run => [])
-        RSpec.should_receive(:reset)
+        RSpec.should_receive(:internal_reset)
+        RSpec::Core::Runner.run([], err, out)
+      end
+
+      it "issues a deprecation warning if run is invoked twice" do
+        RSpec.configuration.stub(:files_to_run => [])
+        RSpec::Core::Runner.run([], err, out)
+        RSpec.configuration.stub(:files_to_run => [])
+        expect(RSpec).to receive(:warn_deprecation).with(/no longer implicitly/)
         RSpec::Core::Runner.run([], err, out)
       end
 
